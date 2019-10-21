@@ -15,12 +15,22 @@ let positionCalculator =
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose'); 
 let app = express();
 
 const port = 8081;
 
 var server = app.listen(port, function() {
 	console.log('Listening on ' + port);
+});
+
+mongoose.connect("mongodb://localhost/tracking", { useNewUrlParser: true, useUnifiedTopology: true });
+
+const DeviceModel = Mongoose.model("device", {
+    macAdd: String, 
+    rssi: Number,
+    dist: Number,
+    time: Date
 });
 
 app.use(function(req, res, next) {
@@ -89,8 +99,15 @@ app.post('/send-data', function(req, res) {
 		measures = [];
 	}
 	
-	let response = `OK, the distance for the sniffed mac ${req.body.sniffedMac} is ${d})`;
-	res.send(response);
+	try {
+        var device = new DeviceModel(request.body);
+        var result = await device.save();
+		let response = `OK, the distance for the sniffed mac ${req.body.sniffedMac} is ${d})`;
+        res.send(response);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+
 });
 
 app.get('/get-data', function(req, res) {
