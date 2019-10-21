@@ -137,5 +137,29 @@ app.get('/get-data', function(req, res) {
 			}
 		]
 	};
-	res.send(JSON.stringify(response));
+
+	var response2 = {
+		"beacon": {'x': 1, 'y': 4},
+		"sensores": [
+			{
+				"x": 0,
+				"y": 0,
+				"mac": 'CC:50:E3:95:93:64',
+				"raio": 3,
+			},
+			{
+				"x": -5,
+				"y": 6,
+				"mac": '24:6F:28:16:6E:08',
+				"raio": 7,
+			},
+			{
+				"x": 4,
+				"y": 6,
+				"mac": '3C:71:BF:FB:E2:BC',
+				"raio": 3,
+			}
+		]
+	};
+	res.send(JSON.stringify(response2));
 });
