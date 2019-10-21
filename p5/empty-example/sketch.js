@@ -37,9 +37,9 @@ let Sensor = class{
 
 		stroke(200);
 		noFill();
-		circle(this.position[0], this.position[1], this.radius);
+		circle(width/2 + this.position[0], height/2 - this.position[1], this.radius);
 		fill(20);
-		circle(this.position[0], this.position[1], 5);
+		circle(width/2 + this.position[0], height/2 - this.position[1], 5);
 	}
 } 
 
@@ -61,7 +61,7 @@ let Beacon = class{
 
 	renderBeacon(){
 		fill(10, 10, 10);
-		circle(this.position[0], this.position[1], 10);
+		circle(widht/2 + this.position[0], height/2 - this.position[1], 10);
 	}
 }
 
