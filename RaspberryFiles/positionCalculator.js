@@ -1,5 +1,8 @@
 
-// this object is supposed to calculate the position of the beacon
+// Este objeto calcula a posicao do beacon
+// x1, y1: posicao da ESP32 de referencia 1
+// x2, y2: posicao da ESP32 de referencia 2
+// x3, y3: posicao da ESP32 de referencia 3
 function positionCalculator(x1, y1, x2, y2, x3, y3) {
 	this.x1 = x1;
 	this.x2 = x2;
@@ -15,6 +18,14 @@ function positionCalculator(x1, y1, x2, y2, x3, y3) {
 	// d2 = distancia2 ate o mac da esp 3: 24:6F:28:16:6E:08
 	// d3 = distancia3 ate o mac da esp 4: 3C:71:BF:FB:E2:BC
 	this.calculate = function(d1, d2, d3) {
+		
+		// Quando as circunferencias nao se intersectam, aumenta a medicao das distancias ate se intersectarem
+		if(d1 + d2 < D) {
+			let aux = D - (d1 + d2);
+			d1 += D/2 + 1e-5;
+			d2 += D/2 + 1e-5;
+			d3 += D/2 + 1e-5;
+		}
 		let a = (d1 * d1 - d2 * d2 + D * D)/(2 * D); // distancia do P1 ate o centro da interseccao dos circulos, como explicado em https://stackoverflow.com/questions/3349125/circle-circle-intersection-points 
 		let h = Math.sqrt(d1 * d1 - a * a); // altura ate um ponto de interseccao
 		
@@ -44,7 +55,6 @@ function positionCalculator(x1, y1, x2, y2, x3, y3) {
 
 
 // Testes
-
 pos = new positionCalculator(0, 0, -5, 6, 4, 6);
 
 console.log(pos.calculate(5, 3, 8.2));
