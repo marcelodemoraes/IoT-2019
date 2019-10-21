@@ -70,11 +70,8 @@ app.post('/send-data', function(req, res) {
 	// medicao do fator de environment
 	n = 2.0;
 
-	let ni = (rssi - A)/(10 * Math.log10(2.65))
-	//console.log("ni = " + ni);
-
 	d = Math.pow(10, (-A - rssi)/(10*n));
-	console.log(d);
+	console.log(`Distance: ${d}`);
 	
 	mac = req.body.sourceMac;
 
