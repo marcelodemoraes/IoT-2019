@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
-app.get('/send-data', function(req, res) {
+app.get('/get-data', function(req, res) {
 	console.log('Received GET request');
 	var pos = [];
 	pos.push(Math.floor(Math.random() * 10) - 1);
