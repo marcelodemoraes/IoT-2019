@@ -15,22 +15,25 @@ let positionCalculator =
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose'); 
+const pg = require('pg'); 
+const fs = require('fs')
 let app = express();
+
+/*
+ ** Conectando database
+ */
+let Pool = pg.Pool();
+let pool = Pool();
+fs.readFile("/db/db_config.json", (err, content) => {
+  let dbConfig = JSON.parse(content);
+  pool = Pool(dbConfig);
+  pool.connect();
+});
 
 const port = 8081;
 
 var server = app.listen(port, function() {
 	console.log('Listening on ' + port);
-});
-
-mongoose.connect("mongodb://localhost/tracking", { useNewUrlParser: true, useUnifiedTopology: true });
-
-const DeviceModel = Mongoose.model("device", {
-    macAdd: String, 
-    rssi: Number,
-    dist: Number,
-    time: Date
 });
 
 app.use(function(req, res, next) {
@@ -99,9 +102,13 @@ app.post('/send-data', function(req, res) {
 		measures = [];
 	}
 	
+	pool.query(`INSERT INTO devices VALUES '${req.body.sniffedMac}', ${rssi1}, ${rssi2}, ${rssi3}, CURRENT_TIMESTAMP;`).then(queryResult => {
+		console.log(queryResult);
+	}).catch(err => {
+		console.log(err); 
+	});
+	
 	try {
-        var device = new DeviceModel(request.body);
-        var result = await device.save();
 		let response = `OK, the distance for the sniffed mac ${req.body.sniffedMac} is ${d})`;
         res.send(response);
     } catch (error) {
@@ -161,5 +168,12 @@ app.get('/get-data', function(req, res) {
 			}
 		]
 	};
+
+	pool.query(`SELECT * FROM devices ORDER BY date DESC LIMIT 1;`).then(queryResult => {
+		console.log(queryResult); 
+	}).catch(err => {
+		console.log(err); 
+	});
+
 	res.send(JSON.stringify(response2));
 });
