@@ -15,7 +15,20 @@ let positionCalculator =
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const pg = require('pg'); 
+const fs = require('fs')
 let app = express();
+
+/*
+ ** Conectando database
+ */
+let Pool = pg.Pool();
+let pool = Pool();
+fs.readFile("/db/db_config.json", (err, content) => {
+  let dbConfig = JSON.parse(content);
+  pool = Pool(dbConfig);
+  pool.connect();
+});
 
 const port = 8081;
 
@@ -46,6 +59,7 @@ console.log(d);
 
 let measures = []
 let lastMeasures = []
+let rssis = []
 app.post('/send-data', function(req, res) {
 	console.log('Received POST request');
 	console.log(req.body);
@@ -82,6 +96,7 @@ app.post('/send-data', function(req, res) {
 	mac = req.body.sourceMac;
 
 	measures[mac] = d;
+	rssis[mac] = rssi
 	if(Object.keys(measures).length == 3) {
 		console.log("Resposta");
 		console.log(positionCalculator.calculate(measures[nodes[0].mac], measures[nodes[1].mac], measures[nodes[2].mac]));
@@ -89,8 +104,26 @@ app.post('/send-data', function(req, res) {
 		measures = [];
 	}
 	
-	let response = `OK, the distance for the sniffed mac ${req.body.sniffedMac} is ${d})`;
-	res.send(response);
+	// insert into database
+	if(Object.keys(rssis).length == 3) {
+		rssi1 = rssis[nodes[0].mac];
+		rssi2 = rssis[nodes[1].mac];
+		rssi3 = rssis[nodes[2].mac];
+		pool.query(`INSERT INTO devices VALUES '${req.body.sniffedMac}', ${rssi1}, ${rssi2}, ${rssi3}, CURRENT_TIMESTAMP;`).then(queryResult => {
+			console.log(queryResult);
+		}).catch(err => {
+			console.log(err); 
+		});
+		rssis = [];
+	}
+	
+	try {
+		let response = `OK, the distance for the sniffed mac ${req.body.sniffedMac} is ${d})`;
+        res.send(response);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+
 });
 
 app.get('/get-data', function(req, res) {
@@ -144,5 +177,12 @@ app.get('/get-data', function(req, res) {
 			}
 		]
 	};
+
+	pool.query(`SELECT * FROM devices ORDER BY date DESC LIMIT 1;`).then(queryResult => {
+		console.log(queryResult); 
+	}).catch(err => {
+		console.log(err); 
+	});
+
 	res.send(JSON.stringify(response2));
 });
