@@ -22,9 +22,9 @@ let app = express();
 /*
  ** Conectando database
  */
-let Pool = pg.Pool();
-let pool = Pool();
-fs.readFile("/db/db_config.json", (err, content) => {
+let Pool = pg.Pool;
+let pool;
+fs.readFile("./db/db_config.json", (err, content) => {
   let dbConfig = JSON.parse(content);
   pool = Pool(dbConfig);
   pool.connect();
@@ -109,14 +109,15 @@ app.post('/send-data', function(req, res) {
 		rssi1 = rssis[nodes[0].mac];
 		rssi2 = rssis[nodes[1].mac];
 		rssi3 = rssis[nodes[2].mac];
-		pool.query(`INSERT INTO devices VALUES '${req.body.sniffedMac}', ${rssi1}, ${rssi2}, ${rssi3}, CURRENT_TIMESTAMP;`).then(queryResult => {
-			console.log(queryResult);
-		}).catch(err => {
-			console.log(err); 
-		});
 		rssis = [];
 	}
 	
+	pool.query(`INSERT INTO devices(MAC, RSSI1, DATE) VALUES ('${req.body.sniffedMac}', ${rssi}, CURRENT_TIMESTAMP);`).then(queryResult => {
+		console.log(queryResult);
+	}).catch(err => {
+		console.log(err); 
+	});
+
 	try {
 		let response = `OK, the distance for the sniffed mac ${req.body.sniffedMac} is ${d})`;
         res.send(response);
