@@ -1,3 +1,12 @@
+/*
+Captura de dados
+1 - Pegar a relção mac dos sensores:sala verificada do banco de dados
+2 - Ver qual dos sensores está mais próximo do beacon
+3 - Enviar ao bd o mac do beacon, a hora e o mac do sensor ao bd
+
+Requisição de dados em tempo real
+1 - Enviar a quem está requisitando a sala em que se encontra o beacon no momento
+*/
 console.log('Hello World');
 
 const PositionCalculator = require('./positionCalculator');
