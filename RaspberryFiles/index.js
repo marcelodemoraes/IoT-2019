@@ -22,9 +22,9 @@ let app = express();
 /*
  ** Conectando database
  */
-let Pool = pg.Pool();
-let pool = Pool();
-fs.readFile("/db/db_config.json", (err, content) => {
+let Pool = pg.Pool;
+let pool;
+fs.readFile("./db/db_config.json", (err, content) => {
   let dbConfig = JSON.parse(content);
   pool = Pool(dbConfig);
   pool.connect();
