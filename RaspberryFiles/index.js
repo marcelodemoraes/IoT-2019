@@ -20,9 +20,11 @@ let app = express();
 let Pool = pg.Pool;
 let pool;
 fs.readFile("./db/db_config.json", (err, content) => {
+  if(err) console.log(err);
   let dbConfig = JSON.parse(content);
   pool = Pool(dbConfig);
   pool.connect();
+  getRooms();
 });
 
 const port = 8081;
@@ -40,12 +42,16 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
-console.log("Retrieving information about building from database");
-pool.query(`SELECT * FROM rooms`).then(queryResult => {
-	console.log(queryResult); 
-}).catch(err => {
-	console.log(err); 
-});
+function getRooms() {
+
+	console.log("Retrieving information about building from database");
+	pool.query(`SELECT * FROM rooms`).then(queryResult => {
+		console.log(queryResult); 
+	}).catch(err => {
+		console.log(err); 
+	});
+
+}
 
 function work() {
 	let rssis = []
