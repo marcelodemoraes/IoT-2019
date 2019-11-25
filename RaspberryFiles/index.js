@@ -44,6 +44,7 @@ app.use(bodyParser.json());
 
 let rooms = [];
 let rssis = [];
+let measures = [];
 
 function getRooms() {
 
@@ -59,6 +60,7 @@ function getRooms() {
 }
 
 function calculateRooms() {
+	measures = [];
 	Object.keys(rssis).forEach((k, i) => {
 		let closestMac = "";
 		Object.keys(rssis[k]).forEach((r, i) => {
@@ -73,6 +75,7 @@ function calculateRooms() {
 			console.log("Sala nao encontrada");
 		}
 
+		measures[k] = room;
 		pool.query(`INSERT INTO devices (mac, room) VALUES ('$1', $2)`, k, room).catch(err => {
 			console.log(err);
 		});
@@ -118,61 +121,10 @@ function work() {
 	app.get('/get-data', function(req, res) {
 		console.log('Received GET request');
 
-		let pos = positionCalculator.calculate(lastMeasures[nodes[0].mac], lastMeasures[nodes[1].mac], lastMeasures[nodes[2].mac]);
-		var response = {
-			"beacon": {'x': pos[0], 'y': pos[1]},
-			"sensores": [
-				{
-					"x": nodes[0].x,
-					"y": nodes[0].y,
-					"mac": nodes[0].mac,
-					"raio": lastMeasures[nodes[0].mac],
-				},
-				{
-					"x": nodes[1].x,
-					"y": nodes[1].y,
-					"mac": nodes[1].mac,
-					"raio": lastMeasures[nodes[1].mac],
-				},
-				{
-					"x": nodes[2].x,
-					"y": nodes[2].y,
-					"mac": nodes[2].mac,
-					"raio": lastMeasures[nodes[2].mac],
-				}
-			]
-		};
-
-		var response2 = {
-			"beacon": {'x': 1, 'y': 4},
-			"sensores": [
-				{
-					"x": 0,
-					"y": 0,
-					"mac": 'CC:50:E3:95:93:64',
-					"raio": 3,
-				},
-				{
-					"x": -5,
-					"y": 6,
-					"mac": '24:6F:28:16:6E:08',
-					"raio": 7,
-				},
-				{
-					"x": 4,
-					"y": 6,
-					"mac": '3C:71:BF:FB:E2:BC',
-					"raio": 3,
-				}
-			]
-		};
-
-		pool.query(`SELECT * FROM devices ORDER BY date DESC LIMIT 1;`).then(queryResult => {
-			console.log(queryResult); 
-		}).catch(err => {
-			console.log(err); 
+		let result = {};
+		Object.keys(measures).forEach((k, i) => {
+			result[k] = measures[k];
 		});
-
-		res.send(JSON.stringify(response2));
+		res.send(JSON.stringify(result));
 	});
 }
