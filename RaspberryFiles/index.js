@@ -42,24 +42,54 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
+let rooms = [];
+let rssis = [];
+
 function getRooms() {
 
 	console.log("Retrieving information about building from database");
 	pool.query(`SELECT * FROM rooms`).then(queryResult => {
-		console.log(queryResult); 
+		for(let i = 0; i < queryResult.rows.length; ++i)
+			rooms[queryResult.rows[i].mac] = queryResult.rows[i].room;
+		work();
 	}).catch(err => {
 		console.log(err); 
 	});
 
 }
 
+function calculateRooms() {
+	Object.keys(rssis).forEach((k, i) => {
+		let closestMac = "";
+		Object.keys(rssis[k]).forEach((r, i) => {
+			if(closestMac.length == 0 || rssis[k][closestMac] > rssis[k][r]) {
+				closestMac = r;
+			}
+		});
+
+		let room = rooms[closestMac];
+
+		if(room == undefined) {
+			console.log("Sala nao encontrada");
+		}
+
+		pool.query(`INSERT INTO devices (mac, room) VALUES ('$1', $2)`, k, room).catch(err => {
+			console.log(err);
+		});
+	});
+
+	rssis = [];
+}
+
 function work() {
-	let rssis = []
+
+	// calculate rooms for each beacon captured every 5 seconds
+	setInterval(calculateRooms, 5000);
 	app.post('/send-data', function(req, res) {
 		console.log('Received POST request');
 		console.log(req.body);
 
-		let rssi;
+		let rssi, sourceMac, sniffedMac;
 		if(req.body.rssi != undefined) {
 			rssi = req.body.rssi;
 		} else {
@@ -68,26 +98,20 @@ function work() {
 		}
 
 		if(req.body.sniffedMac != undefined) {
-			mac = req.body.sniffedMac;
+			sniffedMac = req.body.sniffedMac;
 		} else {
 			res.send('Error: sniffedMac parameter is not set');
 			return;
 		}
 
-		mac = req.body.sourceMac;
-		rssis[mac] = rssi;
-		if(Object.keys(rssis).length == 2){
-			rssi1 = rssis[nodes[0].mac];
-			rssi2 = rssis[nodes[1].mac];
-
-			if(rssi1 >= rssi2){
-				console.log("Sala 1");
-			}
-			else{
-				console.log("Sala 2");
-			}
-			rssis = [];
+		if(req.body.sourceMac != undefined) {
+			sourceMac = req.body.sourceMac;
+		} else {
+			res.send('Error: sourceMac parameter is not set');
+			return;
 		}
+		if(rssis[sniffedMac] == undefined) rssis[sniffedMac] = [];
+		rssis[sniffedMac][sourceMac] = rssi;
 
 	});
 
