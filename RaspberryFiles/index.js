@@ -52,6 +52,7 @@ function getRooms() {
 	pool.query(`SELECT * FROM rooms`).then(queryResult => {
 		for(let i = 0; i < queryResult.rows.length; ++i)
 			rooms[queryResult.rows[i].mac] = queryResult.rows[i].room;
+		console.log("Query of rooms successful");
 		work();
 	}).catch(err => {
 		console.log(err); 
@@ -76,7 +77,8 @@ function calculateRooms() {
 		}
 
 		measures[k] = room;
-		pool.query(`INSERT INTO devices (mac, room) VALUES ('$1', $2)`, k, room).catch(err => {
+		console.log(`Beacon ${k} is in room ${room}`);
+		pool.query(`INSERT INTO devices (mac, room) VALUES ('${k}', ${room})`).catch(err => {
 			console.log(err);
 		});
 	});
