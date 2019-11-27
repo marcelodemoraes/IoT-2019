@@ -16,11 +16,21 @@ function requestData(){
 function renderBeacon(response){
     ellipseMode(CENTER);
     fill(20);
-    //parsing response
-    //TODO
-    
-    //render circle TODO
-    circle(x, y, z);
+	let room = response['mac do beacon']
+
+	if(room == 1){
+		cirlce(20, 20, 20);
+	}
+
+	else if(room == 2){
+		circle(30, 30, 20);
+	}
+	else if(room == 3){
+		circle(40, 40, 20);
+	}
+	else{
+		console.log("Sala nao mapeada");
+	}
 }
 
 function draw(){
