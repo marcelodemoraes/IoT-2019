@@ -7,7 +7,7 @@ const positions = [[123, 80], [490, 80], [490, 350], [123, 350]];
 const radius = 15;
 
 function requestData() {
-    const url = "192.168.1.100/get-data";
+    const url = "http://192.168.1.100:8081/get-data";
     $.get(url, gotData);
 }
 
@@ -40,7 +40,10 @@ function gotData(data) {
 $(function() {
     console.log('Starting live tracking');
 
-    canvas = document.querySelector("#canvas");
-    context = canvas.getContext('2d');
-    requestData();
+    window.setInterval(function(){
+        canvas = document.querySelector("#canvas");
+        context = canvas.getContext('2d');
+        requestData();
+        clearCanvas();
+    }, 3000);
 });
