@@ -2,6 +2,7 @@
 
 Este repositório é organizado da seguinte forma:
 
+```
 IoT-2019/
 ├── Client/									-- Diretório com arquivos para a página HTML de front end
 │   ├── 1Ptug8zYS_SKggPNyC0ITw.woff2
@@ -25,6 +26,7 @@ IoT-2019/
 │   ├── package.json
 │   └── package-lock.json
 └── README.md
+```
 
 1. Ideia Resumida
 
@@ -56,10 +58,12 @@ A ideia resumida da aplicação é implementar um sistema de sensores em cada sa
 	- rssi (valor do rssi lido)
 
 	A comunicação entre página frontend e servidor acontece por meio da requisição GET, para a url <IPServidor>/get-data, e o servidor retorna um dicionário JSON em que as chaves são endereços MAC dos beacons e os valores são os IDs de suas salas associadas. Exemplo:
+	```
 	{
 		"23:BF:AA:43:64": 2,
 		"C3:B2:11:43:62": 1
 	}
+	```
 
 	2.4 Página frontend
 
