@@ -4,7 +4,7 @@ Este repositório é organizado da seguinte forma:
 
 ```
 IoT-2019/
-├── Client/									-- Diretório com arquivos para a página HTML de front end
+├── Client/	-- Diretório com arquivos para a página HTML de front end
 │   ├── 1Ptug8zYS_SKggPNyC0ITw.woff2
 │   ├── 1Ptug8zYS_SKggPNyCMIT5lu.woff2
 │   ├── b5.png
@@ -13,15 +13,15 @@ IoT-2019/
 │   ├── jquery-3.4.1.min.js
 │   ├── mapa_b5.jpg
 │   └── raleway.css
-├── documentation.txt						-- este arquivo
-├── ESP32Files/								-- Arquivos para a ESP32
+├── documentation.txt	-- este arquivo
+├── ESP32Files/	-- Arquivos para a ESP32
 │   ├── BLE_iBeacon 						
-│   │   └── BLE_iBeacon.ino 				-- Arquivo para ser instalado no Beacon
+│   │   └── BLE_iBeacon.ino	-- Arquivo para ser instalado no Beacon
 │   └── BTsniferWithPOST/	
-│       └── BTsniferWithPOST.ino 			-- Arquivo para ser instalado no Sniffer (sensor)
-├── RaspberryFiles/							-- Diretório com arquivos para a Raspberry
-│   ├── index.js 							-- script principal
-│   ├── node_modules/						-- módulos do Node
+│       └── BTsniferWithPOST.ino	-- Arquivo para ser instalado no Sniffer (sensor)
+├── RaspberryFiles/	-- Diretório com arquivos para a Raspberry
+│   ├── index.js	-- script principal
+│   ├── node_modules/	-- módulos do Node
 │   ├── npm-debug.log
 │   ├── package.json
 │   └── package-lock.json
