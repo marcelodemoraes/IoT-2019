@@ -12,4 +12,4 @@ Para rodar o sistema, só é preciso instalar nas ESP32 os códigos ino de Beaco
 
 ```node index.js```
 
-Depois, para acessar a monitoração do sistema, basta abrir `front.html` em um browser na mesma rede que os equipamentos para visualizar a localização do beacon.
+Depois, para acessar a monitoração do sistema, basta abrir `front.html`, presente na pasta `Client`, em um browser na mesma rede que os equipamentos para visualizar a localização do beacon.
