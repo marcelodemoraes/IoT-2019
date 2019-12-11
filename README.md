@@ -6,9 +6,15 @@ Este projeto tem o objetivo de desenvolver um protótipo para rastreamento intel
 
 Os equipamentos utilizados para Beacon e Sensores foram ESP32, e uma Raspberry PI 3 como servidor.
 
+## Instalação
+- Instalar nas ESP32 os códigos ino de Beacon e Sniffer
+- Configurar um banco de dados postgres conforme descrito na documentação
+- Instalar as dependências do node, utilizando o comando `npm install`, dentro da pasta `RaspberryFiles`
+
+
 ## Execução
 
-Para rodar o sistema, só é preciso instalar nas ESP32 os códigos ino de Beacon e Sniffer, e rodar no servidor o arquivo `index.js`, presente no diretório `RaspberryFiles`, com o comando
+Para executar o sistema, só é preciso rodar no servidor o arquivo `index.js`, presente no diretório `RaspberryFiles`, com o comando
 
 ```node index.js```
 
